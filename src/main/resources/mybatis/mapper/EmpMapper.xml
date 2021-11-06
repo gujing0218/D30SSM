@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wtu.mapper.EmpMapper">
+
+    <resultMap id="EmployeeMap" type="Employee">
+        <id property="eno" column="eno"/>
+        <result property="ename" column="ename"/>
+        <result property="job" column="job"/>
+        <result property="hiredate" column="hiredate" javaType="java.sql.Date"/>
+        <result property="age" column="age"/>
+        <result property="sex" column="sex"/>
+        <result property="sal" column="sal"/>
+        <result property="dno" column="dno"/>
+    </resultMap>
+
+    <select id="allEmps" parameterType="com.wtu.util.Params" resultMap="EmployeeMap">
+        select * from employee
+            <where>
+                <if test="ename!=null and ename!=''">
+                    ename like '%${ename}%'
+                </if>
+                <if test="job!=null and job!=''">
+                    and job like '%${job}%'
+                </if>
+                <if test="dateFrom!=null">
+                    and hiredate &gt;= #{dateFrom}
+                </if>
+                <if test="dateTo!=null">
+                    and hiredate &lt;= #{dateTo}
+                </if>
+                <if test="ageFrom!=null and ageFrom!=''">
+                    and age &gt;= #{ageFrom}
+                </if>
+                <if test="ageTo!=null and ageTo!=''">
+                    and age &lt;= #{ageTo}
+                </if>
+                <if test="salFrom!=null and salFrom!=''">
+                    and sal &gt;= #{salFrom}
+                </if>
+                <if test="salTo!=null and salTo!=''">
+                    and sal &lt;= #{salTo}
+                </if>
+                <if test="dno!=null and dno!=''">
+                    and dno = #{dno}
+                </if>
+            </where>
+    </select>
+<!--删除员工-->
+    <delete id="deleteById">
+        delete from employee where eno = #{id}
+    </delete>
+<!--    添加-->
+    <insert id="insertEmp" parameterType="Employee">
+        insert into employee(ename,job,hiredate,age,sex,sal,dno)
+            values (#{ename},#{job},#{hiredate},${age},#{sex},${sal},#{dno})
+    </insert>
+<!--    根据id查询单条-->
+    <select id="selectById" resultMap="EmployeeMap">
+        select * from employee where eno = #{id}
+    </select>
+<!--    修改-->
+    <update id="updateEmp" parameterType="Employee">
+        update employee set ename=#{ename},job=#{job},hiredate=#{hiredate},age=#{age},
+            sex=#{sex},sal=#{sal},dno=#{dno}
+        where eno = #{eno}
+    </update>
+</mapper>
